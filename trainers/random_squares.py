@@ -1,15 +1,14 @@
 import tkinter as tk
+import random
 
-
-class SquaresTrainer:
+class RandomSquaresTrainer:
 
     # ---------- Константы ----------
-    START_NUM = 1
-    FINISH_NUM = 100
+    
 
     def __init__(self):
         # ---------- Переменные состояния ----------
-        self.start_num = self.START_NUM
+        self.create_numbers()
         self.milliseconds = 0
         self.running = False
         self.timer_started = False
@@ -24,7 +23,7 @@ class SquaresTrainer:
 
         self.label = tk.Label(
             self.win,
-            text=f"{self.start_num} x {self.start_num}",
+            text=f"{self.numbers[0]} x {self.numbers[0]}",
             bg="gray",
             font=("Arial", 55)
         )
@@ -62,7 +61,6 @@ class SquaresTrainer:
         self.win.mainloop()
 
     # ---------- Логика ----------
-
     def combo(self, event=None):
         if not self.running:
             self.start_timer()
@@ -70,12 +68,12 @@ class SquaresTrainer:
 
     def check_number(self, event=None):
         try:
-            if int(self.entry.get()) == self.start_num * self.start_num:
-                self.start_num += 1
+            if int(self.entry.get()) == self.numbers[0] * self.numbers[0]:
+                self.next_number()
         except ValueError:
             pass
 
-        self.label.config(text=f"{self.start_num} x {self.start_num}")
+        self.label.config(text=f"{self.numbers[0]} x {self.numbers[0]}")
         self.entry.delete(0, tk.END)
 
     def key_pressed(self, event):
@@ -86,7 +84,7 @@ class SquaresTrainer:
     def update_timer(self):
         self.timer_started = True
 
-        if self.start_num > self.FINISH_NUM:
+        if not self.numbers:
             self.stop_timer()
             self.label.config(text="Игра закончена")
             return
@@ -109,15 +107,23 @@ class SquaresTrainer:
 
     def reset_game(self):
         self.milliseconds = 0
-        self.start_num = self.START_NUM
         self.timer_started = False
         self.running = False
 
         self.timer_label.config(text="00:00")
-        self.label.config(text=f"{self.start_num} x {self.start_num}")
+        self.label.config(text=f"{self.numbers[0]} x {self.numbers[0]}")
         self.entry.delete(0, tk.END)
+        self.create_numbers
+    def create_numbers(self,start=1,finish=100):
+        self.numbers = list(range(start,finish))
+        random.shuffle(self.numbers)
 
-
+    def next_number(self):
+        if self.numbers:
+          self.numbers.pop(0)
+          return self.numbers.pop(0)
+        else:
+            return None
 # Запуск
 if __name__ == "__main__":
-    SquaresTrainer()
+    RandomSquaresTrainer()
