@@ -6,7 +6,8 @@ class RandomSquaresTrainer:
     # ---------- Константы ----------
     
 
-    def __init__(self):
+    def __init__(self,parent,app):
+        self.app = app
         # ---------- Переменные состояния ----------
         self.create_numbers()
         self.milliseconds = 0
@@ -14,15 +15,11 @@ class RandomSquaresTrainer:
         self.timer_started = False
 
         # ---------- GUI ----------
-        self.win = tk.Tk()
-        self.win.title("Игра с квадратами")
-        self.win.geometry("700x700")
-        self.win.resizable(False, False)
-
-        self.win.bind("<Return>", self.combo)
+        self.frame = tk.Frame(parent)
+        self.frame.pack(fill="both",expand=True)
 
         self.label = tk.Label(
-            self.win,
+            self.frame,
             text=f"{self.numbers[0]} x {self.numbers[0]}",
             bg="gray",
             font=("Arial", 55)
@@ -30,20 +27,21 @@ class RandomSquaresTrainer:
         self.label.place(x=100, y=50, width=500, height=200)
 
         self.timer_label = tk.Label(
-            self.win,
+            self.frame,
             text="00:00",
             bg="gray",
             font=("Arial", 70)
         )
         self.timer_label.place(x=100, y=500, width=500, height=200)
 
-        self.entry = tk.Entry(self.win, font=("Arial", 100))
+        self.entry = tk.Entry(self.frame, font=("Arial", 100))
         self.entry.place(x=100, y=250, width=350, height=100)
         self.entry.focus()
         self.entry.bind("<Key>", self.key_pressed)
+        self.entry.bind("<Return>", self.combo)
 
         self.start_btn = tk.Button(
-            self.win,
+            self.frame,
             text="Enter",
             command=self.combo,
             bg="red"
@@ -51,14 +49,13 @@ class RandomSquaresTrainer:
         self.start_btn.place(x=450, y=250, width=150, height=100)
 
         self.reset_btn = tk.Button(
-            self.win,
+            self.frame,
             text="Reset",
             command=self.reset_game,
             bg="red"
         )
         self.reset_btn.place(x=450, y=350, width=150, height=100)
 
-        self.win.mainloop()
 
     # ---------- Логика ----------
     def combo(self, event=None):
@@ -95,7 +92,7 @@ class RandomSquaresTrainer:
             seconds = self.milliseconds % 60
             self.timer_label.config(text=f"{minutes:02}:{seconds:02}")
 
-            self.win.after(1000, self.update_timer)
+            self.frame.after(1000, self.update_timer)
 
     def start_timer(self):
         if not self.running:
@@ -113,7 +110,7 @@ class RandomSquaresTrainer:
         self.timer_label.config(text="00:00")
         self.label.config(text=f"{self.numbers[0]} x {self.numbers[0]}")
         self.entry.delete(0, tk.END)
-        self.create_numbers
+        self.create_numbers()
     def create_numbers(self,start=1,finish=100):
         self.numbers = list(range(start,finish))
         random.shuffle(self.numbers)
@@ -124,6 +121,3 @@ class RandomSquaresTrainer:
           return self.numbers.pop(0)
         else:
             return None
-# Запуск
-if __name__ == "__main__":
-    RandomSquaresTrainer()

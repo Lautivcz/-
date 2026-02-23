@@ -7,7 +7,8 @@ class SquaresTrainer:
     START_NUM = 1
     FINISH_NUM = 100
 
-    def __init__(self):
+    def __init__(self,parent,app):
+        self.app = app
         # ---------- Переменные состояния ----------
         self.start_num = self.START_NUM
         self.milliseconds = 0
@@ -15,15 +16,11 @@ class SquaresTrainer:
         self.timer_started = False
 
         # ---------- GUI ----------
-        self.win = tk.Tk()
-        self.win.title("Игра с квадратами")
-        self.win.geometry("700x700")
-        self.win.resizable(False, False)
-
-        self.win.bind("<Return>", self.combo)
+        self.frame = tk.Frame(parent)
+        self.frame.pack(fill="both",expand=True)
 
         self.label = tk.Label(
-            self.win,
+            self.frame,
             text=f"{self.start_num} x {self.start_num}",
             bg="gray",
             font=("Arial", 55)
@@ -31,20 +28,21 @@ class SquaresTrainer:
         self.label.place(x=100, y=50, width=500, height=200)
 
         self.timer_label = tk.Label(
-            self.win,
+            self.frame,
             text="00:00",
             bg="gray",
             font=("Arial", 70)
         )
         self.timer_label.place(x=100, y=500, width=500, height=200)
 
-        self.entry = tk.Entry(self.win, font=("Arial", 100))
+        self.entry = tk.Entry(self.frame, font=("Arial", 100))
         self.entry.place(x=100, y=250, width=350, height=100)
         self.entry.focus()
         self.entry.bind("<Key>", self.key_pressed)
+        self.entry.bind("<Return>", self.combo)
 
         self.start_btn = tk.Button(
-            self.win,
+            self.frame,
             text="Enter",
             command=self.combo,
             bg="red"
@@ -52,14 +50,12 @@ class SquaresTrainer:
         self.start_btn.place(x=450, y=250, width=150, height=100)
 
         self.reset_btn = tk.Button(
-            self.win,
+            self.frame,
             text="Reset",
             command=self.reset_game,
             bg="red"
         )
         self.reset_btn.place(x=450, y=350, width=150, height=100)
-
-        self.win.mainloop()
 
     # ---------- Логика ----------
 
@@ -97,7 +93,7 @@ class SquaresTrainer:
             seconds = self.milliseconds % 60
             self.timer_label.config(text=f"{minutes:02}:{seconds:02}")
 
-            self.win.after(1000, self.update_timer)
+            self.frame.after(1000, self.update_timer)
 
     def start_timer(self):
         if not self.running:
